@@ -35,7 +35,7 @@ var TerraformProviderInitializer = terraform.ProviderInitializer{
 
 		switch value := r.(type) {
 		case string:
-			if regCode == "" {
+			if value == "" {
 				log.Logger.Info(fmt.Sprintf("AWS terraform provider region not set, defaulting to %s", DefaultRegion))
 				return awstf.NewProvider(ProviderName, DefaultRegion)
 			}
