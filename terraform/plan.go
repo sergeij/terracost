@@ -157,7 +157,7 @@ func (p *Plan) extractModuleConfiguration(prefix string, module *ConfigurationMo
 		if child.Module != nil {
 			nextPrefix := k
 			if prefix != "" {
-				nextPrefix = fmt.Sprintf("%s.%s", prefix, k)
+				nextPrefix = fmt.Sprintf("%s.module.%s", prefix, k)
 			}
 			err := p.extractModuleConfiguration(nextPrefix, child.Module, providers, resourceProviders)
 			if err != nil {
@@ -168,7 +168,7 @@ func (p *Plan) extractModuleConfiguration(prefix string, module *ConfigurationMo
 	return nil
 }
 
-var reResAddrClean = regexp.MustCompile(`\[\d*\]`)
+var reResAddrClean = regexp.MustCompile(`\[[^\]]*\]`)
 
 // cleanResourceAddresss will remove all unnecessary parts of it so it can be matched:
 // * Remove all the [*] that it may have
@@ -186,6 +186,9 @@ func (p *Plan) extractModuleQueries(module *Module, resourceProviders map[string
 		pwrv, ok := resourceProviders[cleanResourceAddresss(tfres.Address)]
 		if !ok || tfres.Mode != "managed" {
 			continue
+		}
+		if tfres.Values == nil {
+			tfres.Values = make(map[string]interface{})
 		}
 		for k, v := range pwrv.Values {
 			if v == nil {

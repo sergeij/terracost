@@ -85,7 +85,17 @@ func (p *Provider) newEKSNodeGroup(rss map[string]terraform.Resource, vals eksNo
 			}
 		}
 
-		lt, err := decodeLaunchTemplateValues(rss[ltref].Values)
+		ltRes, ok := rss[ltref]
+		if !ok || ltRes.Values == nil {
+			// LT not found (e.g. ID/Name unknown at plan time), fall back to node group instance types
+			if len(vals.InstanceTypes) > 0 {
+				inst.instanceType = vals.InstanceTypes[0]
+			} else {
+				inst.instanceType = defaultEKSInstanceType
+			}
+			return inst
+		}
+		lt, err := decodeLaunchTemplateValues(ltRes.Values)
 		if err != nil {
 			return inst
 		}
