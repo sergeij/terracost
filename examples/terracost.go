@@ -76,7 +76,19 @@ func main() {
 	if mysqlPassword == "" {
 		mysqlPassword = "terracost"
 	}
-	mysqlDSN := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/terracost_test?multiStatements=true", mysqlUser, mysqlPassword)
+	mysqlHost := os.Getenv("TERRACOST_MYSQL_HOST")
+	if mysqlHost == "" {
+		mysqlHost = "127.0.0.1"
+	}
+	mysqlPort := os.Getenv("TERRACOST_MYSQL_PORT")
+	if mysqlPort == "" {
+		mysqlPort = "3306"
+	}
+	mysqlDatabase := os.Getenv("TERRACOST_MYSQL_DATABASE")
+	if mysqlDatabase == "" {
+		mysqlDatabase = "terracost_test"
+	}
+	mysqlDSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=true", mysqlUser, mysqlPassword, mysqlHost, mysqlPort, mysqlDatabase)
 	db, err := sql.Open("mysql", mysqlDSN)
 	if err != nil {
 		fmt.Printf("%s\n", err)
