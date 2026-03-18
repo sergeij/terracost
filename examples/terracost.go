@@ -68,7 +68,16 @@ func main() {
 	}
 
 	// Use your mysql access with MultiStatements
-	db, err := sql.Open("mysql", "root:terracost@tcp(127.0.0.1:3306)/terracost_test?multiStatements=true")
+	mysqlUser := os.Getenv("TERRACOST_MYSQL_USER")
+	if mysqlUser == "" {
+		mysqlUser = "root"
+	}
+	mysqlPassword := os.Getenv("TERRACOST_MYSQL_PASSWORD")
+	if mysqlPassword == "" {
+		mysqlPassword = "terracost"
+	}
+	mysqlDSN := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/terracost_test?multiStatements=true", mysqlUser, mysqlPassword)
+	db, err := sql.Open("mysql", mysqlDSN)
 	if err != nil {
 		fmt.Printf("%s\n", err)
 		os.Exit(1)
