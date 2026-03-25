@@ -73,9 +73,6 @@ func main() {
 		mysqlUser = "root"
 	}
 	mysqlPassword := os.Getenv("TERRACOST_MYSQL_PASSWORD")
-	if mysqlPassword == "" {
-		mysqlPassword = "terracost"
-	}
 	mysqlHost := os.Getenv("TERRACOST_MYSQL_HOST")
 	if mysqlHost == "" {
 		mysqlHost = "127.0.0.1"
